@@ -11,6 +11,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 import modelo.Conexion;
 import modelo.estados;
+import modelo.localidades;
+import modelo.municipios;
 
 public class comboBoxUno extends javax.swing.JFrame {
 
@@ -36,8 +38,12 @@ public class comboBoxUno extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         cbxEstados = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        cbxMunicipios = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        cbxLocalidades = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jtMunicipios = new javax.swing.JTable();
+        txtDatos = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -49,34 +55,45 @@ public class comboBoxUno extends javax.swing.JFrame {
             }
         });
 
-        jtMunicipios.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+        jLabel2.setText("Municipio:");
+
+        cbxMunicipios.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxMunicipiosItemStateChanged(evt);
             }
-        ));
-        jScrollPane1.setViewportView(jtMunicipios);
+        });
+
+        jLabel3.setText("Localidad:");
+
+        cbxLocalidades.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxLocalidadesItemStateChanged(evt);
+            }
+        });
+
+        txtDatos.setColumns(20);
+        txtDatos.setRows(5);
+        jScrollPane1.setViewportView(txtDatos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(42, 42, 42)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addComponent(jLabel1)
-                        .addGap(63, 63, 63)
-                        .addComponent(cbxEstados, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(73, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(49, 49, 49)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbxEstados, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbxMunicipios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbxLocalidades, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -85,9 +102,17 @@ public class comboBoxUno extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(cbxEstados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
+                .addGap(47, 47, 47)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(cbxMunicipios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(cbxLocalidades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -97,8 +122,12 @@ public class comboBoxUno extends javax.swing.JFrame {
         if (evt.getStateChange() == ItemEvent.SELECTED) 
         {
             estados est = (estados) cbxEstados.getSelectedItem();
+            municipios mun = new municipios();
+            DefaultComboBoxModel mdlMunicipio = new DefaultComboBoxModel(mun.mostrarMunicipios(est.getId()));
+            cbxMunicipios.setModel(mdlMunicipio);
+            cbxLocalidades.removeAllItems();
             
-            try {
+            /**try {
                 DefaultTableModel modelo = new DefaultTableModel();
                 jtMunicipios.setModel(modelo);
 
@@ -138,9 +167,30 @@ public class comboBoxUno extends javax.swing.JFrame {
             
             } catch (SQLException ex) {
                 System.err.println(ex.toString());
-            }
-            }
+            }**/
+        }
     }//GEN-LAST:event_cbxEstadosItemStateChanged
+
+    private void cbxLocalidadesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxLocalidadesItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) 
+        {
+            estados est = (estados) cbxEstados.getSelectedItem();
+            municipios mun = (municipios) cbxMunicipios.getSelectedItem();
+            localidades loc = (localidades) cbxLocalidades.getSelectedItem();
+            
+            txtDatos.setText("Estado: " + est.getNombre() + "\nMunicipio: " + mun.getNombre() + "\nlocalidad: " + loc.getNombre());
+        }
+    }//GEN-LAST:event_cbxLocalidadesItemStateChanged
+
+    private void cbxMunicipiosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxMunicipiosItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) 
+        {
+            municipios mun = (municipios) cbxMunicipios.getSelectedItem();
+            localidades loc = new localidades();
+            DefaultComboBoxModel modLocalidades = new DefaultComboBoxModel(loc.mostrarLocalidades(mun.getId()));
+            cbxLocalidades.setModel(modLocalidades);
+        }
+    }//GEN-LAST:event_cbxMunicipiosItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -179,8 +229,12 @@ public class comboBoxUno extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> cbxEstados;
+    private javax.swing.JComboBox<String> cbxLocalidades;
+    private javax.swing.JComboBox<String> cbxMunicipios;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jtMunicipios;
+    private javax.swing.JTextArea txtDatos;
     // End of variables declaration//GEN-END:variables
 }

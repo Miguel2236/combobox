@@ -15,7 +15,7 @@ import java.util.Vector;
  *
  * @author miguel
  */
-public class estados {
+public class localidades {
     private int id;
     private String nombre;
 
@@ -40,32 +40,32 @@ public class estados {
         return this.nombre;
     }
     
-    public Vector<estados> mostrarEstados()
+    public Vector<localidades> mostrarLocalidades(Integer idMunicipio)
     {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Conexion conn = new Conexion();
         Connection con = conn.getConnection();
         
-        Vector<estados> datos = new Vector<estados>();
-        estados dat = null;
+        Vector<localidades> datos = new Vector<localidades>();
+        localidades dat = null;
         
         try {
-            String sql = "SELECT id_estado, estado FROM t_estado";
+            String sql = "SELECT id_localidad, id_municipio, localidad FROM t_localidad WHERE id_municipio = " + idMunicipio;
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             
-            dat = new estados();
+            dat = new localidades();
             dat.setId(0);
-            dat.setNombre("Selecciona Estado");
+            dat.setNombre("Selecciona Localidad");
             datos.add(dat);
             
             //cbxEstados.addItem("Seleccione Estado");
             while (rs.next()) 
             {
-                dat = new estados();
-                dat.setId(rs.getInt("id_estado"));
-                dat.setNombre(rs.getString("estado"));
+                dat = new localidades();
+                dat.setId(rs.getInt("id_localidad"));
+                dat.setNombre(rs.getString("localidad"));
                 datos.add(dat);
             }
             
